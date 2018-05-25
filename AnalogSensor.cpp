@@ -39,6 +39,7 @@ void AnalogSensor::Sense(OSCBundle *bundle) {
 
     peakToPeak = signalMax - signalMin;
 
-    bundle->add(senName).add(peakToPeak);
+    //bundle->add(senName).add(peakToPeak);
+    bundle->add(senName).add((signalMax + signalMin) / 2);
     Serial.print("MIC: "); Serial.print(sample); Serial.print(" "); Serial.print(count); Serial.print(" "); Serial.print(signalMax); Serial.print(" "); Serial.println(signalMin);
 }
