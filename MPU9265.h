@@ -7,14 +7,24 @@ class MPU9265 : public AbstractSensor {
 private :
     uint8_t address;
 
-    void MPU9250SelfTest(float * destination)
-    void WriteByte(uint8_t reg, uint8_t data);
-    uint8_t ReadByte(uint8_t reg);
-    void ReadBytes(uint8_t reg, uint8_t count, uint8_t * dest);
+    void getMres();
+    void getGres();
+    void getAres();
+	void readAccelData(int16_t * destination);
+	void readGyroData(int16_t * destination);
+	void readMagData(int16_t * destination);
+    void initMAG(float * destination);
+    void initMPU9250();
+    void MPU9250SelfTest(float * destination);
+    void calibrateMPU9250(float * dest1, float * dest2);
+    void writeByte(uint8_t reg, uint8_t data);
+    uint8_t readByte(uint8_t reg);
+    void readBytes(uint8_t reg, uint8_t count, uint8_t * dest);
     
     const char *accName;
     const char *gyrName;
-    const char *magName;    
+    const char *magName;  
+    const char *yprName;  
 
     // Specify sensor full scale
     uint8_t Gscale;
@@ -58,7 +68,7 @@ private :
     float eInt[3];       // vector to hold integral error for Mahony method
  
 public :
-    MPU9265(const char *aName, const char *gName, const char *mName);
+    MPU9265(const char *aName, const char *gName, const char *mName, const char *yName);
 
     virtual void Init();
     virtual void Sense(OSCBundle *bundle);
