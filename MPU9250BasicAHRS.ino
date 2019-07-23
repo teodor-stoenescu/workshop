@@ -43,22 +43,22 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(9, 8, 7, 5, 6);
 //
 //Magnetometer Registers
 #define MAG_ADDRESS   0x0C
-#define AK8963_WHO_AM_I  0x00 // should return 0x48
-#define AK8963_INFO      0x01
-#define AK8963_ST1       0x02  // data ready status bit 0
-#define AK8963_XOUT_L	 0x03  // data
-#define AK8963_XOUT_H	 0x04
-#define AK8963_YOUT_L	 0x05
-#define AK8963_YOUT_H	 0x06
-#define AK8963_ZOUT_L	 0x07
-#define AK8963_ZOUT_H	 0x08
-#define AK8963_ST2       0x09  // Data overflow bit 3 and data read error status bit 2
-#define AK8963_CNTL      0x0A  // Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
-#define AK8963_ASTC      0x0C  // Self test control
-#define AK8963_I2CDIS    0x0F  // I2C disable
-#define AK8963_ASAX      0x10  // Fuse ROM x-axis sensitivity adjustment value
-#define AK8963_ASAY      0x11  // Fuse ROM y-axis sensitivity adjustment value
-#define AK8963_ASAZ      0x12  // Fuse ROM z-axis sensitivity adjustment value
+#define MAG_WHO_AM_I  0x00 // should return 0x48
+#define MAG_INFO      0x01
+#define MAG_ST1       0x02  // data ready status bit 0
+#define MAG_XOUT_L	 0x03  // data
+#define MAG_XOUT_H	 0x04
+#define MAG_YOUT_L	 0x05
+#define MAG_YOUT_H	 0x06
+#define MAG_ZOUT_L	 0x07
+#define MAG_ZOUT_H	 0x08
+#define MAG_ST2       0x09  // Data overflow bit 3 and data read error status bit 2
+#define MAG_CNTL      0x0A  // Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
+#define MAG_ASTC      0x0C  // Self test control
+#define MAG_I2CDIS    0x0F  // I2C disable
+#define MAG_ASAX      0x10  // Fuse ROM x-axis sensitivity adjustment value
+#define MAG_ASAY      0x11  // Fuse ROM y-axis sensitivity adjustment value
+#define MAG_ASAZ      0x12  // Fuse ROM z-axis sensitivity adjustment value
 
 #define SELF_TEST_X_GYRO 0x00                  
 #define SELF_TEST_Y_GYRO 0x01                                                                          
@@ -345,10 +345,10 @@ void setup()
     Serial.println("MPU9250 initialized for active data mode...."); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
   
     // Read the WHO_AM_I register of the magnetometer, this is a good test of communication
-    byte d = readByte(MAG_ADDRESS, AK8963_WHO_AM_I);  // Read WHO_AM_I register for AK8963
-    Serial.print("AK8963 "); Serial.print("I AM "); Serial.print(d, HEX); Serial.print(" I should be "); Serial.println(0x48, HEX);
+    byte d = readByte(MAG_ADDRESS, MAG_WHO_AM_I);  // Read WHO_AM_I register for MAG
+    Serial.print("MAG "); Serial.print("I AM "); Serial.print(d, HEX); Serial.print(" I should be "); Serial.println(0x48, HEX);
     display.clearDisplay();
-    display.setCursor(20,0); display.print("AK8963");
+    display.setCursor(20,0); display.print("MAG");
     display.setCursor(0,10); display.print("I AM");
     display.setCursor(0,20); display.print(d, HEX);  
     display.setCursor(0,30); display.print("I Should Be");
@@ -356,8 +356,8 @@ void setup()
     display.display();
     delay(1000); 
   
-    // Get magnetometer calibration from AK8963 ROM
-    initAK8963(magCalibration); Serial.println("AK8963 initialized for active data mode...."); // Initialize device for active mode read of magnetometer
+    // Get magnetometer calibration from MAG ROM
+    initMAG(magCalibration); Serial.println("MAG initialized for active data mode...."); // Initialize device for active mode read of magnetometer
   
   if(SerialDebug) {
     //  Serial.println("Calibration values: ");
@@ -367,7 +367,7 @@ void setup()
   }
   
     display.clearDisplay();
-    display.setCursor(20,0); display.print("AK8963");
+    display.setCursor(20,0); display.print("MAG");
     display.setCursor(0,10); display.print("ASAX "); display.setCursor(50,10); display.print(magCalibration[0], 2);
     display.setCursor(0,20); display.print("ASAY "); display.setCursor(50,20); display.print(magCalibration[1], 2);
     display.setCursor(0,30); display.print("ASAZ "); display.setCursor(50,30); display.print(magCalibration[2], 2);
@@ -460,7 +460,7 @@ void loop()
     }
     
     display.clearDisplay();     
-    display.setCursor(0, 0); display.print("MPU9250/AK8963");
+    display.setCursor(0, 0); display.print("MPU9250/MAG");
     display.setCursor(0, 8); display.print(" x   y   z  ");
 
     display.setCursor(0,  16); display.print((int)(1000*ax)); 
@@ -666,8 +666,8 @@ void readGyroData(int16_t * destination)
 void readMagData(int16_t * destination)
 {
   uint8_t rawData[7];  // x/y/z gyro register data, ST2 register stored here, must read ST2 at end of data acquisition
-  if(readByte(MAG_ADDRESS, AK8963_ST1) & 0x01) { // wait for magnetometer data ready bit to be set
-  readBytes(MAG_ADDRESS, AK8963_XOUT_L, 7, &rawData[0]);  // Read the six raw data and ST2 registers sequentially into data array
+  if(readByte(MAG_ADDRESS, MAG_ST1) & 0x01) { // wait for magnetometer data ready bit to be set
+  readBytes(MAG_ADDRESS, MAG_XOUT_L, 7, &rawData[0]);  // Read the six raw data and ST2 registers sequentially into data array
   uint8_t c = rawData[6]; // End data read by reading ST2 register
     if(!(c & 0x08)) { // Check if magnetic sensor overflow set, if not then report data
     destination[0] = ((int16_t)rawData[1] << 8) | rawData[0] ;  // Turn the MSB and LSB into a signed 16-bit value
@@ -684,24 +684,24 @@ int16_t readTempData()
   return ((int16_t)rawData[0] << 8) | rawData[1] ;  // Turn the MSB and LSB into a 16-bit value
 }
        
-void initAK8963(float * destination)
+void initMAG(float * destination)
 {
   // First extract the factory calibration for each magnetometer axis
   uint8_t rawData[3];  // x/y/z gyro calibration data stored here
-  writeByte(MAG_ADDRESS, AK8963_CNTL, 0x00); // Power down magnetometer  
+  writeByte(MAG_ADDRESS, MAG_CNTL, 0x00); // Power down magnetometer  
   delay(10);
-  writeByte(MAG_ADDRESS, AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
+  writeByte(MAG_ADDRESS, MAG_CNTL, 0x0F); // Enter Fuse ROM access mode
   delay(10);
-  readBytes(MAG_ADDRESS, AK8963_ASAX, 3, &rawData[0]);  // Read the x-, y-, and z-axis calibration values
+  readBytes(MAG_ADDRESS, MAG_ASAX, 3, &rawData[0]);  // Read the x-, y-, and z-axis calibration values
   destination[0] =  (float)(rawData[0] - 128)/256. + 1.;   // Return x-axis sensitivity adjustment values, etc.
   destination[1] =  (float)(rawData[1] - 128)/256. + 1.;  
   destination[2] =  (float)(rawData[2] - 128)/256. + 1.; 
-  writeByte(MAG_ADDRESS, AK8963_CNTL, 0x00); // Power down magnetometer  
+  writeByte(MAG_ADDRESS, MAG_CNTL, 0x00); // Power down magnetometer  
   delay(10);
   // Configure the magnetometer for continuous read and highest resolution
   // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
   // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
-  writeByte(MAG_ADDRESS, AK8963_CNTL, Mscale << 4 | Mmode); // Set magnetometer data resolution and sample ODR
+  writeByte(MAG_ADDRESS, MAG_CNTL, Mscale << 4 | Mmode); // Set magnetometer data resolution and sample ODR
   delay(10);
 }
 
