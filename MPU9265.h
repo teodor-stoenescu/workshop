@@ -7,6 +7,9 @@ class MPU9265 : public AbstractSensor {
 private :
     uint8_t address;
 
+
+    void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
+    void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
     void getMres();
     void getGres();
     void getAres();
@@ -36,8 +39,8 @@ private :
     int16_t accelCount[3];  // Stores the 16-bit signed accelerometer sensor output
     int16_t gyroCount[3];   // Stores the 16-bit signed gyro sensor output
     int16_t magCount[3];    // Stores the 16-bit signed magnetometer sensor output
-    float magCalibration[3], magbias[3];  // Factory mag calibration and mag bias
-    float gyroBias[3], accelBias[3];      // Bias corrections for gyro and accelerometer
+    float magCalibration[3] = {0, 0, 0}, magbias[3] = {0, 0, 0};  // Factory mag calibration and mag bias
+    float gyroBias[3] = {0, 0, 0}, accelBias[3] = {0, 0, 0};      // Bias corrections for gyro and accelerometer
     int16_t tempCount;      // temperature raw count output
     float   temperature;    // Stores the real internal chip temperature in degrees Celsius
     float   SelfTest[6];    // holds results of gyro and accelerometer self test
@@ -64,8 +67,8 @@ private :
     uint32_t Now;        // used to calculate integration interval
 
     float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values 
-    float q[4];    // vector to hold quaternion
-    float eInt[3];       // vector to hold integral error for Mahony method
+    float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};    // vector to hold quaternion
+    float eInt[3] = {0.0f, 0.0f, 0.0f};       // vector to hold integral error for Mahony method
  
 public :
     MPU9265(const char *aName, const char *gName, const char *mName, const char *yName);

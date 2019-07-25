@@ -34,17 +34,17 @@ const char *buttonNames[12] = {
     nullptr
 };
 
-MPU9265 mpu9265("/accel", "/gyro");
+MPU9265 mpu9265("/accel", "/gyro", "/mag", "/yawpitchroll");
 HCSR04<TRIG_PIN, ECHO_PIN> *hcsr04 = HCSR04<TRIG_PIN, ECHO_PIN>::GetInstance("/dist");
 MPR121 mpr121(buttonNames);
 AnalogSensor max9814("/mic", A0, 18);
 MAX30100Sensor *max30100 = MAX30100Sensor::GetInstance("/pulse", "/beat", MAX30100_PULSE | MAX30100_BEAT);
 
 AbstractSensor *sensors[] = {
-    //&mpu9265,  // accel
+    &mpu9265,  // accel
     //hcsr04,    // dist
     //&mpr121,   // touch
-    &max9814,  // analog
+    //&max9814,  // analog
     //max30100     // puls
 };
 const int sensorCount = sizeof(sensors) / sizeof(sensors[0]);
