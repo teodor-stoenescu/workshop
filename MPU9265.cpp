@@ -745,7 +745,8 @@ void MPU9265::Init() {
     MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
     Serial.print("x-axis self test: acceleration trim within : "); Serial.print(SelfTest[0],1); Serial.println("% of factory value");
     Serial.print("y-axis self test: acceleration trim within : "); Serial.print(SelfTest[1],1); Serial.println("% of factory value");
-    Serial.print("z-axis self test: acceleration trim within : "); Serial.print(SelfTest[2],1); Serial.println("% of factory value");
+    Serial.print("z-a
+        xis self test: acceleration trim within : "); Serial.print(SelfTest[2],1); Serial.println("% of factory value");
     Serial.print("x-axis self test: gyration trim within : "); Serial.print(SelfTest[3],1); Serial.println("% of factory value");
     Serial.print("y-axis self test: gyration trim within : "); Serial.print(SelfTest[4],1); Serial.println("% of factory value");
     Serial.print("z-axis self test: gyration trim within : "); Serial.print(SelfTest[5],1); Serial.println("% of factory value");
@@ -841,6 +842,7 @@ void MPU9265::Sense(OSCBundle *bundle) {
         yaw   *= 180.0f / PI; 
         yaw   += 5.8; // Declination at Bucharest, Romania
         roll  *= 180.0f / PI;
+        count = millis(); 
     }
     // With these settings the filter is updating at a ~145 Hz rate using the Madgwick scheme and 
     // >200 Hz using the Mahony scheme even though the display refreshes at only 2 Hz.
@@ -852,7 +854,6 @@ void MPU9265::Sense(OSCBundle *bundle) {
     // This filter update rate should be fast enough to maintain accurate platform orientation for 
     // stabilization control of a fast-moving robot or quadcopter. Compare to the update rate of 200 Hz
     // produced by the on-board Digital Motion Processor of Invensense's MPU6050 6 DoF and MPU9150 9DoF sensors.
-    count = millis(); 
     sumCount = 0;
     sum = 0;  
 
