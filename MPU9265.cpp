@@ -825,7 +825,7 @@ void MPU9265::Sense(OSCBundle *bundle) {
     // Serial print and/or display at 0.5 s rate independent of data rates
     delt_t = millis() - count;
 
-    if (delt_t > 500) { // update LCD once per half-second independent of read rate
+    //if (delt_t > 500) { // update LCD once per half-second independent of read rate
         // Define output variables from updated quaternion---these are Tait-Bryan angles, commonly used in aircraft orientation.
       // In this coordinate system, the positive z-axis is down toward Earth. 
       // Yaw is the angle between Sensor x-axis and Earth magnetic North (or true North if corrected for local declination, looking down on the sensor positive yaw is counterclockwise.
@@ -843,7 +843,7 @@ void MPU9265::Sense(OSCBundle *bundle) {
         yaw   += 5.8; // Declination at Bucharest, Romania
         roll  *= 180.0f / PI;
         count = millis(); 
-    }
+    //}
     // With these settings the filter is updating at a ~145 Hz rate using the Madgwick scheme and 
     // >200 Hz using the Mahony scheme even though the display refreshes at only 2 Hz.
     // The filter update rate is determined mostly by the mathematical steps in the respective algorithms, 
