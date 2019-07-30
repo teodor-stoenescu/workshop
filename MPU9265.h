@@ -27,7 +27,8 @@ private :
     const char *accName;
     const char *gyrName;
     const char *magName;  
-    const char *yprName;  
+    const char *yprName;
+    const char *distName;
 
     // Specify sensor full scale
     uint8_t Gscale;
@@ -69,9 +70,10 @@ private :
     float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values 
     float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};    // vector to hold quaternion
     float eInt[3] = {0.0f, 0.0f, 0.0f};       // vector to hold integral error for Mahony method
+    float distGyro;		// total distance travelled, computed via gyro sensor data
  
 public :
-    MPU9265(const char *aName, const char *gName, const char *mName, const char *yName);
+    MPU9265(const char *aName, const char *gName, const char *mName, const char *yName, const char *dName);
 
     virtual void Init();
     virtual void Sense(OSCBundle *bundle);

@@ -715,11 +715,12 @@ void MPU9265::readBytes(uint8_t reg, uint8_t count, uint8_t *dest) {
     }
 }
 
-MPU9265::MPU9265(const char *aName, const char *gName, const char *mName, const char *yName) {
+MPU9265::MPU9265(const char *aName, const char *gName, const char *mName, const char *yName, const char *dName) {
     accName = aName;
     gyrName = gName;
     magName = mName;
     yprName = yName;
+    distName = dName;
 }
 
 void MPU9265::Init() {
@@ -741,12 +742,12 @@ void MPU9265::Init() {
     deltat = 0.0f; sum = 0.0f;        // integration interval for both filter schemes
     lastUpdate = 0; firstUpdate = 0; // used to calculate integration interval
     Now = 0;        // used to calculate integration interval
+    distGyro = 0.0f;
 
     MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
     Serial.print("x-axis self test: acceleration trim within : "); Serial.print(SelfTest[0],1); Serial.println("% of factory value");
     Serial.print("y-axis self test: acceleration trim within : "); Serial.print(SelfTest[1],1); Serial.println("% of factory value");
-    Serial.print("z-a
-        xis self test: acceleration trim within : "); Serial.print(SelfTest[2],1); Serial.println("% of factory value");
+    Serial.print("z-axis self test: acceleration trim within : "); Serial.print(SelfTest[2],1); Serial.println("% of factory value");
     Serial.print("x-axis self test: gyration trim within : "); Serial.print(SelfTest[3],1); Serial.println("% of factory value");
     Serial.print("y-axis self test: gyration trim within : "); Serial.print(SelfTest[4],1); Serial.println("% of factory value");
     Serial.print("z-axis self test: gyration trim within : "); Serial.print(SelfTest[5],1); Serial.println("% of factory value");
@@ -888,9 +889,13 @@ void MPU9265::Sense(OSCBundle *bundle) {
     Serial.print (":");
     Serial.print (gz,DEC);  
     Serial.print ("\n");
-  */  
+  */
+
+    distGyro += sqrtf( sin(gx * deltat) * sin(gx * deltat) + sin(gy * deltat) * sin(gy * deltat) + sin(gz * deltat) * sin(gz * deltat) );
+
     bundle->add(accName).add(ax).add(ay).add(az);
     bundle->add(gyrName).add(gx).add(gy).add(gz);
     bundle->add(magName).add(mx).add(my).add(mz);
-    bundle->add(yprName).add(yaw).add(pitch).add(roll);
+    bundle->add(yprName).add(yaw).add(pitch).add(roll);    
+    bundle->add(distName).add(distGyro);
 }

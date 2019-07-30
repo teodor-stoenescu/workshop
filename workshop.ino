@@ -1,6 +1,3 @@
-/*
- *  Simple HTTP get webclient test
- */
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <OSCBundle.h>
@@ -34,7 +31,7 @@ const char *buttonNames[12] = {
     nullptr
 };
 
-MPU9265 mpu9265("/accel", "/gyro", "/mag", "/yawpitchroll");
+MPU9265 mpu9265("/accel", "/gyro", "/mag", "/yawpitchroll", "/dist");
 HCSR04<TRIG_PIN, ECHO_PIN> *hcsr04 = HCSR04<TRIG_PIN, ECHO_PIN>::GetInstance("/dist");
 MPR121 mpr121(buttonNames);
 AnalogSensor max9814("/mic", A0, 18);
