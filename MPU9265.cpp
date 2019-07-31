@@ -760,7 +760,7 @@ void MPU9265::Init() {
     initMAG(magCalibration); Serial.println("MAG initialized for active data mode...."); // Initialize device for active mode read of magnetometer
     // Set gyroscope low pass filter at 5Hz
     writeByte(CONFIG, 0x06);
-    
+
         /*
     // Set accelerometers low pass filter at 5Hz
     writeByte(ACCEL_CONFIG2, 0x06);
@@ -892,8 +892,16 @@ void MPU9265::Sense(OSCBundle *bundle) {
     Serial.print (gz,DEC);  
     Serial.print ("\n");
   */
+    float gxThr=gx, gyThr=gy, gzThr=gz;
 
-    distGyro += sqrtf( sin(gx * deltat) * sin(gx * deltat) + sin(gy * deltat) * sin(gy * deltat) + sin(gz * deltat) * sin(gz * deltat) );
+    if(abs(gx) < 2.5)
+        gxThr = 0;
+    if(abs(gy) < 2.5)
+        gyThr = 0;
+    if(abs(gz) < 2.5)
+        gzThr = 0;
+
+    distGyro += sqrtf( sin(gxThr * deltat) * sin(gxThr * deltat) + sin(gyThr * deltat) * sin(gyThr * deltat) + sin(gzThr * deltat) * sin(gzThr * deltat) );
 
     bundle->add(accName).add(ax).add(ay).add(az);
     bundle->add(gyrName).add(gx).add(gy).add(gz);
