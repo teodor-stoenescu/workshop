@@ -839,7 +839,7 @@ void MPU9265::Sense(OSCBundle *bundle) {
       // applied in the correct order which for this configuration is yaw, pitch, and then roll.
       // For more see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles which has additional links.
         yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);   
-        pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+        pitch = asin(2.0f * (q[0] * q[2] - q[1] * q[3]));
         roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
         pitch *= 180.0f / PI;
         yaw   *= 180.0f / PI; 
@@ -901,7 +901,9 @@ void MPU9265::Sense(OSCBundle *bundle) {
     if(abs(gz) < 2.5)
         gzThr = 0;
 
-    distGyro += sqrtf( sin(gxThr * deltat) * sin(gxThr * deltat) + sin(gyThr * deltat) * sin(gyThr * deltat) + sin(gzThr * deltat) * sin(gzThr * deltat) );
+ //   distGyro += sqrtf( sin(gxThr * deltat) * sin(gxThr * deltat) + sin(gyThr * deltat) * sin(gyThr * deltat) + sin(gzThr * deltat) * sin(gzThr * deltat) );
+    distGyro += sqrtf(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+
 
     bundle->add(accName).add(ax).add(ay).add(az);
     bundle->add(gyrName).add(gx).add(gy).add(gz);
