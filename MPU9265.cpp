@@ -758,7 +758,9 @@ void MPU9265::Init() {
 
     // Get magnetometer calibration from MAG ROM
     initMAG(magCalibration); Serial.println("MAG initialized for active data mode...."); // Initialize device for active mode read of magnetometer
-
+    // Set gyroscope low pass filter at 5Hz
+    writeByte(CONFIG, 0x06);
+    
         /*
     // Set accelerometers low pass filter at 5Hz
     writeByte(ACCEL_CONFIG2, 0x06);
