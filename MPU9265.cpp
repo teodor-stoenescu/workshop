@@ -188,7 +188,7 @@ enum Mscale {
   
  // Similar to Madgwick scheme but uses proportional and integral filtering on the error between estimated reference vectors and
  // measured ones. 
-            void MPU9265::MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz)
+            void MPU9265::MahonyQuaternionUpdate()
         {
             float q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   // short name local variable for readability
             float norm;
@@ -196,6 +196,10 @@ enum Mscale {
             float vx, vy, vz, wx, wy, wz;
             float ex, ey, ez;
             float pa, pb, pc;
+
+            gx *= PI/180.0f;
+            gy *= PI/180.0f;
+            gz *= PI/180.0f;
 
             // Auxiliary variables to avoid repeated arithmetic
             float q1q1 = q1 * q1;
@@ -823,7 +827,7 @@ void MPU9265::Sense(OSCBundle *bundle) {
   // This is ok by aircraft orientation standards!  
   // Pass gyro rate as rad/s
   //  MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f,  my,  mx, mz);
-  MahonyQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
+  MahonyQuaternionUpdate();
 
     // Serial print and/or display at 0.5 s rate independent of data rates
     delt_t = millis() - count;
