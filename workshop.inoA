@@ -1,5 +1,6 @@
-// B // green
-/////////////
+// purple
+// A ////
+
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <OSCBundle.h>
@@ -23,9 +24,9 @@
 #define BPIN 13
 #define RPIN 14
 
-int red = 0;
-int green = 0;
-int blue = 0;
+int redd = 0;
+int greenn = 0;
+int bluee = 0;
 
 float accel0 = 0;
 
@@ -111,45 +112,45 @@ void loop() {
         sensors[i]->Sense(&bundle);
     }
 
-
     // leds
     float newAccel = bundle.getOSCMessage("/accel")->getFloat(0);
     float activity = abs(accel0 - newAccel);
     activity -= 0.01;
     Serial.println(activity);
     //Serial.println(activity);
+    Serial.println(accel0);
     accel0 = newAccel;
+    Serial.println(accel0);
 
     if (random(1) < 0.001) {
-      if (green < 125 && green >= -2) {
-        if (((activity * 50) + green) < 125) {
-          green = green + (activity * 50);
+      if (bluee < 125 && bluee >= -2) {
+        if (((activity * 50) + bluee) < 125) {
+          bluee = bluee + (activity * 50);
         }
       }
-      if (red < 255 && red >= -2) {
-        if (((activity * 50) + red) < 255) {
-          red = red + (activity * 50);
+      if (redd < 255 && redd >= -2) {
+        if (((activity * 50) + redd) < 255) {
+          redd = redd + (activity * 50);
         }
       }
       
       activity *= 0.1;
-      if (blue < 125 && blue >= 0) {
-        if ((blue + (activity * -50)) < 255 && (blue + (activity * -50)) >= 0) {
-          blue = blue + (activity * -50);
-          //red = red + (activity * -5);
+      if (greenn < 125 && greenn >= 0) {
+        if ((greenn + (activity * -50)) < 255 && (greenn + (activity * -50)) >= 0) {
+          greenn = greenn + (activity * -50);
+          //redd = redd + (activity * -5);
         }
       }
-      analogWrite(BPIN, blue);
-      analogWrite(GPIN, green);
-      analogWrite(RPIN, red);
-  
-      Serial.println(red);
-      Serial.println(green);
-      Serial.println(blue);
+      analogWrite(BPIN, bluee);
+      analogWrite(GPIN, greenn);
+      analogWrite(RPIN, redd);
+
+      Serial.println(redd);
+      Serial.println(greenn);
+      Serial.println(bluee);
       Serial.println("---");
     }
 
-    
     udp.beginPacket(maxHostIp, maxHostPort);
     //Serial.println(bundle.getOSCMessage("/accel")->getFloat(0));
     bundle.send(udp);
