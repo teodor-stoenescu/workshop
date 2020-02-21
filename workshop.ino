@@ -31,7 +31,7 @@ const char *buttonNames[12] = {
     nullptr
 };
 
-MPU9265 mpu9265("/accel", "/gyro", "/mag", "/yawpitchroll", "/dist");
+MPU9265 mpu9265("/accel", "/gyro", "/ypr");
 HCSR04<TRIG_PIN, ECHO_PIN> *hcsr04 = HCSR04<TRIG_PIN, ECHO_PIN>::GetInstance("/dist");
 MPR121 mpr121(buttonNames);
 AnalogSensor max9814("/mic", A0, 18);
