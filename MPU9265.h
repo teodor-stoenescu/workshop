@@ -7,26 +7,13 @@ class MPU9265 : public AbstractSensor {
 private :
     uint8_t address;
 
+    void WriteByte(uint8_t reg, uint8_t data);
+    uint8_t ReadByte(uint8_t reg);
+    void ReadBytes(uint8_t reg, uint8_t count, uint8_t * dest);
 
-    void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
-    void MahonyQuaternionUpdate();
-    void getMres();
-    void getGres();
-    void getAres();
-	void readAccelData(int16_t * destination);
-	void readGyroData(int16_t * destination);
-	void readMagData(int16_t * destination);
-    void initMAG(float * destination);
-    void initMPU9250();
-    void MPU9250SelfTest(float * destination);
-    void calibrateMPU9250(float * dest1, float * dest2);
-    void writeByte(uint8_t reg, uint8_t data);
-    uint8_t readByte(uint8_t reg);
-    void readBytes(uint8_t reg, uint8_t count, uint8_t * dest);
-    
     const char *accName;
     const char *gyrName;
-    const char *magName;  
+    const char *magName;
     const char *yprName;
     const char *distName;
     const char *quatName;
@@ -55,8 +42,8 @@ private :
     // However, with this value, the LSM9SD0 response time is about 10 seconds to a stable initial quaternion.
     // Subsequent changes also require a longish lag time to a stable output, not fast enough for a quadcopter or robot car!
     // By increasing beta (GyroMeasError) by about a factor of fifteen, the response time constant is reduced to ~2 sec
-    // I haven't noticed any reduction in solution accuracy. This is essentially the I coefficient in a PID control sense; 
-    // the bigger the feedback coefficient, the faster the solution converges, usually at the expense of accuracy. 
+    // I haven't noticed any reduction in solution accuracy. This is essentially the I coefficient in a PID control sense;
+    // the bigger the feedback coefficient, the faster the solution converges, usually at the expense of accuracy.
     // In any case, this is the free parameter in the Madgwick filtering and fusion scheme.
     float beta;   // compute beta
     float zeta;   // compute zeta, the other free parameter in the Madgwick scheme usually set to a small or zero value
@@ -68,11 +55,11 @@ private :
     uint32_t lastUpdate, firstUpdate; // used to calculate integration interval
     uint32_t Now;        // used to calculate integration interval
 
-    float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values 
+    float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values
     float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};    // vector to hold quaternion
     float eInt[3] = {0.0f, 0.0f, 0.0f};       // vector to hold integral error for Mahony method
     float distGyro;		// total distance travelled, computed via gyro sensor data
- 
+
 public :
     MPU9265(const char *aName, const char *gName, const char *mName, const char *yName, const char *dName, const char *qName);
 

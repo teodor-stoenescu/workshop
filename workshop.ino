@@ -44,6 +44,7 @@ const char *buttonNames[12] = {
     nullptr
 };
 
+
 MPU9265 mpu9265("/accel", "/gyro", "/mag", "/yawpitchroll", "/dist", "/quat");
 HCSR04<TRIG_PIN, ECHO_PIN> *hcsr04 = HCSR04<TRIG_PIN, ECHO_PIN>::GetInstance("/dist");
 MPR121 mpr121(buttonNames);
@@ -58,10 +59,10 @@ AbstractSensor *sensors[] = {
     //max30100     // puls
 };
 const int sensorCount = sizeof(sensors) / sizeof(sensors[0]);
- 
+
 const char* ssid     = WIFI_SSID;
 const char* password = WIFI_PASSWORD;
- 
+
 IPAddress maxHostIp(WIFI_MAX_HOST);
 const short int maxHostPort = WIFI_MAX_PORT;
 
@@ -69,41 +70,41 @@ WiFiUDP udp;
 
 void setup() {
     Serial.begin(115200);
-    
+
   pinMode(RPIN, OUTPUT);
   pinMode(GPIN, OUTPUT);
   pinMode(BPIN, OUTPUT);
 
     delay(100);
-    
+
     // We start by connecting to a WiFi network
-    
+
     Serial.println();
     Serial.println();
     Serial.print("Connecting to ");
     Serial.println(ssid);
-    
+
     WiFi.begin(ssid, password);
-    
+
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");
     }
-    
+
     Serial.println("");
-    Serial.println("WiFi connected");  
+    Serial.println("WiFi connected");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
 
-    delay(500); 
-    
+    delay(500);
+
     for (int i = 0; i < sensorCount; ++i) {
         sensors[i]->Init();
     }
 
 
 }
- 
+
 void loop() {
     OSCBundle bundle;
 
@@ -132,7 +133,7 @@ void loop() {
           red = red + (activity * thresh);
         }
       }
-      
+
       activity *= 0.1;
       if (blue < 125 && blue >= 0) {
         if ((blue + (activity * -thresh)) < 255 && (blue + (activity * -thresh)) >= 0) {
@@ -143,14 +144,14 @@ void loop() {
       analogWrite(BPIN, blue);
       analogWrite(GPIN, green);
       analogWrite(RPIN, red);
-  
+
       Serial.println(red);
       Serial.println(green);
       Serial.println(blue);
       Serial.println("---");
     }
 
-    
+
     udp.beginPacket(maxHostIp, maxHostPort);
     //Serial.println(bundle.getOSCMessage("/accel")->getFloat(0));
     bundle.send(udp);
