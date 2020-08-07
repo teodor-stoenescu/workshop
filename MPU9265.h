@@ -29,6 +29,7 @@ private :
     const char *magName;  
     const char *yprName;
     const char *distName;
+    const char *quatName;
 
     // Specify sensor full scale
     uint8_t Gscale;
@@ -73,7 +74,7 @@ private :
     float distGyro;		// total distance travelled, computed via gyro sensor data
  
 public :
-    MPU9265(const char *aName, const char *gName, const char *mName, const char *yName, const char *dName);
+    MPU9265(const char *aName, const char *gName, const char *mName, const char *yName, const char *dName, const char *qName);
 
     virtual void Init();
     virtual void Sense(OSCBundle *bundle);

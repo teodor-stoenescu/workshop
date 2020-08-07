@@ -719,12 +719,13 @@ void MPU9265::readBytes(uint8_t reg, uint8_t count, uint8_t *dest) {
     }
 }
 
-MPU9265::MPU9265(const char *aName, const char *gName, const char *mName, const char *yName, const char *dName) {
+MPU9265::MPU9265(const char *aName, const char *gName, const char *mName, const char *yName, const char *dName, const char *qName) {
     accName = aName;
     gyrName = gName;
     magName = mName;
     yprName = yName;
     distName = dName;
+    quatName = qName;
 }
 
 void MPU9265::Init() {
@@ -913,5 +914,6 @@ void MPU9265::Sense(OSCBundle *bundle) {
     bundle->add(gyrName).add(gx).add(gy).add(gz);
     bundle->add(magName).add(mx).add(my).add(mz);
     bundle->add(yprName).add(yaw).add(pitch).add(roll);    
+    bundle->add(quatName).add(q[0]).add(q[1]).add(q[2]).add(q[3]);
     bundle->add(distName).add(distGyro);
 }

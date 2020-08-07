@@ -44,7 +44,7 @@ const char *buttonNames[12] = {
     nullptr
 };
 
-MPU9265 mpu9265("/accel", "/gyro", "/mag", "/yawpitchroll", "/dist");
+MPU9265 mpu9265("/accel", "/gyro", "/mag", "/yawpitchroll", "/dist", "/quat");
 HCSR04<TRIG_PIN, ECHO_PIN> *hcsr04 = HCSR04<TRIG_PIN, ECHO_PIN>::GetInstance("/dist");
 MPR121 mpr121(buttonNames);
 AnalogSensor max9814("/mic", A0, 18);
@@ -112,6 +112,7 @@ void loop() {
     }
 
 
+    if (random(1) < 0.001) {
     // leds
     float newAccel = bundle.getOSCMessage("/accel")->getFloat(0);
     float activity = abs(accel0 - newAccel);
@@ -119,23 +120,23 @@ void loop() {
     Serial.println(activity);
     //Serial.println(activity);
     accel0 = newAccel;
+    int thresh = 70;
 
-    if (random(1) < 0.001) {
       if (green < 125 && green >= -2) {
-        if (((activity * 50) + green) < 125) {
-          green = green + (activity * 50);
+        if (((activity * thresh) + green) < 125) {
+          green = green + (activity * thresh);
         }
       }
       if (red < 255 && red >= -2) {
-        if (((activity * 50) + red) < 255) {
-          red = red + (activity * 50);
+        if (((activity * thresh) + red) < 255) {
+          red = red + (activity * thresh);
         }
       }
       
       activity *= 0.1;
       if (blue < 125 && blue >= 0) {
-        if ((blue + (activity * -50)) < 255 && (blue + (activity * -50)) >= 0) {
-          blue = blue + (activity * -50);
+        if ((blue + (activity * -thresh)) < 255 && (blue + (activity * -thresh)) >= 0) {
+          blue = blue + (activity * -thresh);
           //red = red + (activity * -5);
         }
       }
