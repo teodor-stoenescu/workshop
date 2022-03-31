@@ -1,4 +1,3 @@
-// B // green
 /////////////
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
@@ -156,5 +155,5 @@ void loop() {
     bundle.send(udp);
     udp.endPacket();
 
-    delay(18);
+    delay(30); // 18
 }
